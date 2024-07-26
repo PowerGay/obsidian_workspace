@@ -44,4 +44,44 @@ x[i,...] == x[i,:, :, :] #x为4维数组
 
 4、`list_sort()`会就地排序list，而`new_list = sorted(old_list)`会新建一个list对象。
 
-5、`bisect`模块包含两个主要函数，bisect 和 insort，两个函数都利用二分查找算法来在有序序列中查找或插入元素
+5、`bisect`模块包含两个主要函数，`bisect` 和 `insort`，两个函数都利用二分查找算法来在有序序列中查找或插入元素。例子：在有序序列中用`bisect`查找某个元素的插入位置。
+```python
+ import bisect
+ import sys
+ HAYSTACK = [1, 4, 5, 6, 8, 12, 15, 20, 21, 23, 23, 26, 29, 30]
+ NEEDLES = [0, 1, 2, 5, 8, 10, 22, 23, 29, 30, 31]
+
+ def demo(bisect_fn):
+     for needle in reversed(NEEDLES):
+         position = bisect_fn(HAYSTACK, needle)
+         print(position)
+ if __name__ == '__main__':
+     if sys.argv[-1] == 'left': 
+         bisect_fn = bisect.bisect_left 
+     else:
+         bisect_fn = bisect.bisect # 新元素会被放置于它相等的元素的后面
+     demo(bisect_fn)
+```
+`insort(seq, item)`把变量 item 插入到序列 seq 中，并能保持 seq 的升序顺序：
+```python
+ import bisect
+ import random
+ SIZE=7
+ random.seed(1729)
+ my_list = []
+ for i in range(SIZE):
+     new_item = random.randrange(SIZE*2)
+     bisect.insort(my_list, new_item)
+     print('%2d ->' % new_item, my_list)
+```
+`insort`的源码很简单，底层就是`bisect_right`或`bisect_left`得到索引后用a.insert来插入：
+```python
+ def insort_right(a, x, lo=0, hi=None):
+     lo = bisect_right(a, x, lo, hi)
+     a.insert(lo, x)
+ ​
+ def insort_left(a, x, lo=0, hi=None):
+     lo = bisect_left(a, x, lo, hi)
+     a.insert(lo, x)
+ insort = insort_right
+```
