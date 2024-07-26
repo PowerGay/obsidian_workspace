@@ -1,7 +1,7 @@
 # **一、Python的数据类型**
 
 1、对于自定义的序列类型类，需要实现两个特殊方法即`__len__(self)`和`__getitem__(self,position)`。例如：
-```
+```python
  class FrenchDeck:
      ranks = [str(n) for n in range(2, 11)] + list('JQKA')
      suits = 'spades diamonds clubs hearts'.split()
@@ -85,3 +85,25 @@ x[i,...] == x[i,:, :, :] #x为4维数组
      a.insert(lo, x)
  insort = insort_right
 ```
+
+6、如果我们需要一个只包含数字的列表，那么 `array.array` 比 list 更高效数组支持所有跟可变序列有关的操作，包括 `.pop`、`.insert` 和` .extend`。另外，数组还提供从文件读取和存 入文件的更快的方法，如 `.frombytes `和 `.tofile`。
+```python
+from array import array
+ from random import random
+ floats1 = array('d', (random() for i in range(10**7))) # 创建double数组
+​
+ with open('floats.bin', 'wb') as fp1: # 把数组存入二进制文件
+     floats1.tofile(fp1)
+ ​
+ floats2 = array('d') 
+ with open('floats.bin', 'rb') as fp2:
+     floats2.fromfile(fp2, 10**7) # 读取
+ print(floats1 == floats2) # 比较读取和存储的是否一致
+```
+重点：
+	1) 用` array.fromfile` 从一个二进制文件里读出1000万个双精度浮点数只需要0.1秒，这比从文本文件里读取的速度要快60倍。
+	2) 使用 `array.tofile` 写入到二进制文件，比以每行一个浮点数的方式把所有数字写入到文本文件要快 7倍。
+	3) 1000 万个这样的数在二进制文件里只占用 80 000 000 个字节（每个浮点数占8 个字节，不需要任何额外空间），如果是文本文件的话，我们需要 181 515 739 个字节(**20多倍**)。
+
+另外一个快速序列化数字类型的方法是使用` pickle`模块。`pickle.dump` 处理浮点数组的速度几乎跟` array.tofile` 一样快。
+
