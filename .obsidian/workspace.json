@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "b9f9a9ac977c374d",
+        "id": "c35cc549a8fb0602",
         "type": "tabs",
         "children": [
           {
-            "id": "d8cba2260181a101",
+            "id": "403a1b1265a8a9be",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -147,7 +147,7 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "d8cba2260181a101",
+  "active": "403a1b1265a8a9be",
   "lastOpenFiles": [
     "influence Python.md"
   ]
