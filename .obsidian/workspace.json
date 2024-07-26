@@ -11,11 +11,9 @@
             "id": "403a1b1265a8a9be",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "pdf",
               "state": {
-                "file": "Areas/Read Notes/流畅的Python.md",
-                "mode": "source",
-                "source": false
+                "file": "Resources/python/流畅的python.pdf"
               }
             }
           }
@@ -85,7 +83,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Areas/Read Notes/流畅的Python.md",
+                "file": "Resources/python/流畅的python.pdf",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +100,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Areas/Read Notes/流畅的Python.md",
+                "file": "Resources/python/流畅的python.pdf",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +123,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Areas/Read Notes/流畅的Python.md"
+                "file": "Resources/python/流畅的python.pdf"
               }
             }
           }
@@ -147,14 +145,15 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "5a63c6adcbed9f4c",
+  "active": "403a1b1265a8a9be",
   "lastOpenFiles": [
+    "Resources/python/python_trick.pdf",
+    "Resources/python/流畅的python.pdf",
+    "Resources/python/python书籍.md",
+    "Areas/Read Notes/流畅的Python.md",
     "Resources/python/res",
     "Resources/python/res/Pasted image 20240726223758.png",
     "README.md",
-    "Areas/Read Notes/流畅的Python.md",
-    "Resources/python/python_trick.pdf",
-    "Resources/python/流畅的python.pdf",
     "Areas/Read Notes",
     "Areas/Research Reports",
     "Resources/python",
