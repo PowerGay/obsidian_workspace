@@ -118,4 +118,19 @@ from array import array
 | heapq             | heapq 没有队列类，而是提供了 `heappush` 和` heappop`方法， 让用户可以把可变序列当作堆队列或者优先队列来使用。                                                                                                                               |
 
 
-## **三、Python的数据结构**
+## **三、Python的字典与集合
+
+1、模块的命名空间、实例的属性和函数的关键字参数中都可以看到字典的身影  
+跟它有关的内置函数都在`__builtins__.__dict__` 模块中。
+
+2、泛映射类型。collections.abc 模块中有 Mapping 和 MutableMapping 这两个抽象基类，它们的作用是为dict 和其他类似的类型定义形式接口。
+![[Pasted image 20240727072605.png]]
+然而，非抽象映射类型一般不会直接继承这些抽象基类，它们会直接对dict 或是 collections.User.Dict 进行扩展。这些抽象基类的主要作用是作为形式化的文档，它们定义了构建一个映射类型所需要的最基本的接口。然后它们还可以`isinstance` 一起被用来判定某个数据是不是广义上的映射类型。例如：
+```python
+ >>> from collections import abc
+ >>> my_dict = {}
+ >>> isinstance(my_dict,abc.Mapping)
+ True
+ >>> isinstance(my_dict,abc.MutableMapping)
+ True
+```
