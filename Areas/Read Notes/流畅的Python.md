@@ -31,3 +31,6 @@ for card1 in deck
 
 
 # **二、Python的数据结构**
+
+1、python自带的序列类型（可变[Mutable]与不可变），如下图所示：
+![[Pasted image 20240726223758.png]]
