@@ -11,8 +11,12 @@
             "id": "403a1b1265a8a9be",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {}
+              "type": "markdown",
+              "state": {
+                "file": "Areas/Read Notes/流畅的Python.md",
+                "mode": "source",
+                "source": false
+              }
             }
           }
         ]
@@ -81,6 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
+                "file": "Areas/Read Notes/流畅的Python.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -97,6 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
+                "file": "Areas/Read Notes/流畅的Python.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -118,7 +124,9 @@
             "type": "leaf",
             "state": {
               "type": "outline",
-              "state": {}
+              "state": {
+                "file": "Areas/Read Notes/流畅的Python.md"
+              }
             }
           }
         ]
@@ -139,8 +147,19 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "5a63c6adcbed9f4c",
+  "active": "403a1b1265a8a9be",
   "lastOpenFiles": [
+    "README.md",
+    "Areas/Read Notes/流畅的Python.md",
+    "Resources/python/python_trick.pdf",
+    "Resources/python/流畅的python.pdf",
+    "Areas/Read Notes",
+    "Areas/Research Reports",
+    "Resources/python",
+    "Archives",
+    "Resources",
+    "Areas",
+    "Projects",
     "influence Python.md"
   ]
 }
