@@ -229,4 +229,21 @@ from array import array
          return key in self.keys() or str(key) in self.keys()
 ```
 上述例子中需注意：
-	1）
+	1）`__missing__` 中的`isinstance`+`raise`是必须的，因为`__missing__` 调用了`self[str(key)]`，从而实现递归判断。
+	2）`__contains__`是必须实现的，因为当类对象使用'in'操作时，键不存在时是不会走`__contains__`。
+	3）`__contains__`并不存在递归的现象，因为`self.keys()`的类型是dict_keys而不是StrKeyDict0。如果改为`key in self`则会递归调用。
+	
+7、子类化UserDict
+就创造自定义映射类型来说，更倾向于从 UserDict 而不是从 dict 继承。主要原因是，后者有时会在某些方法的实现上走一些捷径，导致我们不得不在它的子类中重写这些方法，但是UserDict 就不会带来这些问题 UserDict 并不是 dict 的子类，但是 UserDict 有一个叫作data 的属性，是 dict 的实例，这个属性实际上是 UserDict 最终存储数据。例如：
+```python
+ import collections
+ class StrKeyDict(collections.UserDict):
+     def __missing__(self, key): 
+         if isinstance(key, str):
+             raise KeyError(key)
+         return self[str(key)]
+     def __contains__(self, key):
+         return str(key) in self.data
+     def __setitem__(self, key, item):
+         self.data[str(key)] = item 
+```
