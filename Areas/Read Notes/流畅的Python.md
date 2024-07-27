@@ -247,3 +247,5 @@ from array import array
      def __setitem__(self, key, item):
          self.data[str(key)] = item 
 ```
+上述例子中需注意：
+	1）在StrKeyDict初始化的时候会调用`__setitem__` 方法将键转换为字符串的形式；而继承dict需要重写`__init__` 方法才行，自带的
