@@ -321,12 +321,12 @@ sorted(fruits, key=locale.strxfrm)
          return '<%s%s />' % (name, attr_str)
  ​
  ​
- print(tag('br')) # 1
- print(tag('p', 'hello')) # 2
- print(tag('p', 'hello', 'world')) # 
- print(tag('p', 'hello', id='nodep')) # 3
- print(tag('p', 'hello', 'world', 'type',cls='pn')) # 4
- print(tag(content='testing', name='img')) # 5 
+ print(tag('br')) # name字段
+ print(tag('p', 'hello')) # conetnt字段获取第二个参数
+ print(tag('p', 'hello', 'world')) 
+ print(tag('p', 'hello', id='nodep')) # 由于id字段没有，所以attrs获取
+ print(tag('p', 'hello', 'world', 'type',cls='pn')) 
+ print(tag(content='testing', name='img')) #attrs获取content
  my_tags = {'name': 'img', 'title':'Sunset Boulevard' ,'src': 'sunset.jpg', 'cls': 'framed'}
- print(tag(**my_tags)) # 6
+ print(tag(**my_tags)) # 解包，参数依次传入
 ```
