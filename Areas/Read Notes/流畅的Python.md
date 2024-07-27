@@ -305,3 +305,28 @@ sorted(fruits, key=locale.strxfrm)
 
 2、任何 Python 对象都可以表现得像函数。为此，只需实现实例方法` __call__`。
 
+3、定位参数和仅限关键字参数。
+```python
+ def tag(name, *content, cls=None, **attrs):
+     """生成一个或多个HTML标签"""
+     if cls is not None:
+         attrs['class'] = cls
+     if attrs:
+         attr_str = ''.join(' %s="%s"' % (attr, value) for attr, value in sorted(attrs.items()))
+     else:
+         attr_str = ''
+     if content:
+         return '\n'.join('<%s%s>%s</%s>' % (name, attr_str, c, name) for c in content)
+     else:
+         return '<%s%s />' % (name, attr_str)
+ ​
+ ​
+ print(tag('br')) # 1
+ print(tag('p', 'hello')) # 2
+ print(tag('p', 'hello', 'world')) # 
+ print(tag('p', 'hello', id='nodep')) # 3
+ print(tag('p', 'hello', 'world', 'type',cls='pn')) # 4
+ print(tag(content='testing', name='img')) # 5 
+ my_tags = {'name': 'img', 'title':'Sunset Boulevard' ,'src': 'sunset.jpg', 'cls': 'framed'}
+ print(tag(**my_tags)) # 6
+```
