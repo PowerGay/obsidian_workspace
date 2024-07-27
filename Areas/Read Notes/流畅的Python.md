@@ -246,6 +246,12 @@ from array import array
          return str(key) in self.data
      def __setitem__(self, key, item):
          self.data[str(key)] = item 
+d = StrKeyDict0([('2', 'two'), ('4', 'four')])
 ```
 上述例子中需注意：
-	1）在StrKeyDict初始化的时候会调用`__setitem__` 方法将键转换为字符串的形式；而继承dict需要重写`__init__` 方法才行，自带的
+	1）在StrKeyDict初始化的时候会存在赋值的操作即`self.data=data`，从而调用`__setitem__` 方法将键转换为字符串的形式；而继承dict，初始化时并不存在赋值操作。
+
+8、集合。
+![[Pasted image 20240727094809.png]]
+集合和字典查找
+9、
