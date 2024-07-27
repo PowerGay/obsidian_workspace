@@ -185,10 +185,10 @@ from array import array
  # get_creators('Spam, spam, spam') # ValueError: Invalid record: 'Spam, spam, spam'
  
 ```
-其中，ist、tuple、dict 等都能作为模式，并且能配合 `*` 或 `**` 和通配符使用：
+其中，list、tuple、dict 等都能作为模式，并且能配合 `*` 或 `**` 和通配符使用：
 - `[*_]` 匹配任意长度的 list;
 - `(_, _, *_)` 匹配长度至少为 2 的 tuple。
 更多操作参考：
 [Python 结构化模式匹配 match case | Python 教程 - 盖若 (gairuo.com)](https://gairuo.com/p/python-match-case)
 
-
+6、`setdefault`与
