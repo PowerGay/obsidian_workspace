@@ -137,7 +137,7 @@ from array import array
 
 标准库里的所有映射类型都是利用 dict 来实现的，因此它们有个共同的限制，即只有可散列 的数据类型才能用作这些映射里的键。
 
-3、可散列的数据类型。如果一个对象是可散列的，那么在这个对象的生命周期中，它的散列值是不变的，而且这个对象需要实现 `__hash__()`方法。另外可散列对象还要有 `__qe__()`方法，这样才能跟其他键做比较。如果两个可散列对象是相等的，那么它们的散列值一定是一样的。其中，基本的不可变数据类型都是可散列的；此外，[**用户自定义的类型对象也是可散列的**]。
+3、可散列的数据类型。如果一个对象是可散列的，那么在这个对象的生命周期中，它的散列值是不变的，而且这个对象需要实现 `__hash__()`方法。另外可散列对象还要有 `__qe__()`方法，这样才能跟其他键做比较。如果两个可散列对象是相等的，那么它们的散列值一定是一样的。其中，基本的不可变数据类型都是可散列的；此外，**用户自定义的类型对象也是可散列的**。
 
 4、字典。3.9开始支持`|`和`|=`来合并字典。如：
 ```python
@@ -151,3 +151,44 @@ from array import array
  >>> d1
  {'a': 2, 'b': 4, 'c': 6}
 ```
+
+5、模式匹配。match/case在Python3.10中开始支持，case部分可以用mapping来做pattern。可以支持序列匹配。如：
+```python
+ def get_creators(record: dict) -> list:
+     match record:
+         case {'type': 'book', 'api': 2, 'authors': [*names]}:
+             return names
+         case {'type': 'book', 'api': 1, 'author': name}:
+             return [name]
+         case {'type': 'book'}:
+             raise ValueError(f"Invalid 'book' record: {record!r}")
+         case {'type': 'movie', 'director': name}:
+             return [name]
+         case _:
+             raise ValueError(f'Invalid record: {record!r}')
+ ​
+ ​
+ b1 = dict(api=1, author='Douglas Hofstadter', type='book', title='Gödel, Escher, Bach')
+ result_b1 = get_creators(b1)
+ print(result_b1)  # ['Douglas Hofstadter']
+ ​
+ from collections import OrderedDict
+ ​
+ b2 = OrderedDict(api=2, type='book',
+                  title='Python in a Nutshell',
+                  authors='Martelli Ravenscroft Holden'.split())
+ result_b2 = get_creators(b2)
+ print(result_b2)  # ['Martelli', 'Ravenscroft', 'Holden']
+ ​
+ # get_creators({'type': 'book', 'pages': 770}) # ValueError: Invalid 'book' record: {'type': 'book', 'pages': 770}
+ ​
+ # get_creators('Spam, spam, spam') # ValueError: Invalid record: 'Spam, spam, spam'
+ 
+```
+其中，ist、tuple、dict 等都能作为模式，并且能配合 `*` 或 `**` 和通配符使用：
+- `[*_]` 匹配任意长度的 list;
+- `(_, _, *_)` 匹配长度至少为 2 的 tuple。
+更多操作参考：
+[Python 结构化模式匹配 match case | Python 教程 - 盖若 (gairuo.com)](https://gairuo.com/p/python-match-case)
+
+
