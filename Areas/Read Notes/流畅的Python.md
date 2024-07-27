@@ -117,7 +117,6 @@ from array import array
 | asyncio           | 里面有 QueuePriorityQueue 。这些类受到 queue 和 multiprocessing 模块的影响，但是为异步编程里的任务管理提供 了专门的便利。                                                                                                                 |
 | heapq             | heapq 没有队列类，而是提供了 `heappush` 和` heappop`方法， 让用户可以把可变序列当作堆队列或者优先队列来使用。                                                                                                                               |
 
-
 ## **三、Python的字典与集合
 
 1、模块的命名空间、实例的属性和函数的关键字参数中都可以看到字典的身影  
@@ -191,4 +190,24 @@ from array import array
 更多操作参考：
 [Python 结构化模式匹配 match case | Python 教程 - 盖若 (gairuo.com)](https://gairuo.com/p/python-match-case)
 
-6、`setdefault`与
+6、`setdefault`与`defaultdict`。
+使用`setdefault`可以在只查找一次字典中的健时，就将没有该键的kv对插入字典中。
+```python
+ my_dict.setdefault(key, []).append(new_value)
+```
+比使用如下方法要快（涉及两次键查询）：
+```python
+ if key not in my_dict:
+     my_dict[key] = [] #1-2行等同于my_dick.get(key,[])
+ my_dict[key].append(new_value)
+```
+有时候为了方便起见，就算某个键在映射里不存在，我们也希望在通过这个键读取值的时候能得到一个默认值。有两个途径能帮我们达到这个目的，一个是通过 defaultdict 这个类型而不是普通的 dict，另一个是给自己定义一个 dict 的子类，然后在子类中实现`__missing__`方法。
+
+在实例化一个 defaultdict 的时候，需要给构造方法提供一个可调用对象，这个可调用对象会在 `__getitem__ `碰到找不到的键的时候被调用，让` __getitem__ `返回某种默认值。但要注意，只能用[]，用get可不行。例如：
+```python
+ from collections import defaultdict
+ dd = defaultdict(list)
+ print(dd.get('a')) # None
+ print(dd['a'])     # []
+```
+这是因为 defaultdict 里的 default_factory 只会在` __getitem__ `里被调用，在其他的方法里完全不会发挥作用。如果有一个类继承了 dict，然后这个继承类提供了 `__missing__`方法，那么在 `__getitem__`碰到找不到的键的时候，Python 就会自动调用它，而不是抛出一个KeyError 异常。 `__missing__` 方法只会被`__getitem__`调用。
