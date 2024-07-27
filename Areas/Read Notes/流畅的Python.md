@@ -298,3 +298,5 @@ sorted(fruits, key=locale.strxfrm)
 >>> sorted_fruits
 ['açaí', 'acerola', 'atemoia', 'cajá', 'caju']
 ```
+
+# **五、函数对象
