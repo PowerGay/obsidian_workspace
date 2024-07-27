@@ -273,4 +273,28 @@ d = StrKeyDict0([('2', 'two'), ('4', 'four')])
 
 5、使用`open`函数打开文件时始终应该明确传入` encoding= 参数`，因为不同的设备使用的默认编码可能不同。
 
-6、
+6、为了正确比较而规范化Unicode字符，建议使用NFC（Normalization Form C）：使用最少的码点构成等价的字符串。
+```python
+from unicodedata import normalize
+s1 = 'café' 
+s2 = 'cafe\N{COMBINING ACUTE ACCENT}' 
+len(s1), len(s2) # (4,5)
+len(normalize('NFC', s1)), len(normalize('NFC', s2)) # (4,4)
+```
+不区分大小写的比较应该使用 `str.casefold()`。
+
+7、在 Python 中，非 ASCII文本的标准排序方式是使用`locale.strxfrm`函数。如下：
+```python
+# 巴西产水果的列表排序 
+import locale my_locale = locale.setlocale(locale.LC_COLLATE, 'pt_BR.UTF-8') fruits = ['caju', 'atemoia', 'cajá', 'açaí', 'acerola'] 
+sorted(fruits, key=locale.strxfrm)
+```
+或者使用PyUCA 库。
+```python
+>>> import pyuca
+>>> coll = pyuca.Collator()
+>>> fruits = ['caju', 'atemoia', 'cajá', 'açaí', 'acerola']
+>>> sorted_fruits = sorted(fruits, key=coll.sort_key)
+>>> sorted_fruits
+['açaí', 'acerola', 'atemoia', 'cajá', 'caju']
+```
