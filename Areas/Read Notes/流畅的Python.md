@@ -302,3 +302,6 @@ sorted(fruits, key=locale.strxfrm)
 # **五、函数对象
 
 1、使用列表推导式来代替`map`和`filter`函数。
+
+2、任何 Python 对象都可以表现得像函数。为此，只需实现实例方法` __call__`。
+
