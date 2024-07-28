@@ -13,7 +13,7 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "Areas/Read Notes/流畅的Python.md",
+                "file": "Areas/Read Notes/python/流畅的Python.md",
                 "mode": "source",
                 "source": false
               }
@@ -85,7 +85,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "Areas/Read Notes/流畅的Python.md",
+                "file": "Areas/Read Notes/python/流畅的Python.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -102,7 +102,7 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "Areas/Read Notes/流畅的Python.md",
+                "file": "Areas/Read Notes/python/流畅的Python.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               }
@@ -125,7 +125,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "Areas/Read Notes/流畅的Python.md"
+                "file": "Areas/Read Notes/python/流畅的Python.md"
               }
             }
           }
@@ -147,10 +147,11 @@
       "command-palette:打开命令面板": false
     }
   },
-  "active": "d60b957781af1125",
+  "active": "5a63c6adcbed9f4c",
   "lastOpenFiles": [
+    "Areas/Read Notes/python",
     "Areas/Tools Guide/Obsidian使用指南.md",
-    "Areas/Read Notes/流畅的Python.md",
+    "Areas/Read Notes/python/流畅的Python.md",
     "Areas/Tools Guide",
     "Resources/python/res/Pasted image 20240727095257.png",
     "Resources/python/res/Pasted image 20240727094809.png",
