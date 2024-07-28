@@ -356,6 +356,8 @@ for city in sorted(metro_data, key=itemgetter(1)):
 ('New York-Newark', 'US', 20.104, (40.808611, -74.020386))
 ```
 
+5、函数中的类型提示
+	1）
 # **六、使用一等函数实现设计模式
 
 经典的策略模式来处理订单折扣如下图所示：
