@@ -375,7 +375,7 @@ for city in sorted(metro_data, key=itemgetter(1)):
 	def name_index(start: int = 32, end: int) -> dict[str, set[str]]:
 ```
 6）抽象基类：一般来说，在参数得类型提示中最好使用`abc.Mapping`或`abc.MutableMapping`，不要使用`dict`
-7）
+
 # **七、使用一等函数实现设计模式**
 
 经典的策略模式来处理订单折扣如下图所示：
@@ -386,3 +386,216 @@ for city in sorted(metro_data, key=itemgetter(1)):
 2. 同一个订单中，单个商品的数量达到20个或以上，享10%折扣。
 3. 订单中不同商品的数量达到10个或以上，享7%折扣。
 代码如下：
+```python
+from abc import ABC, abstractmethod
+from collections.abc import Sequence
+from decimal import Decimal
+from typing import NamedTuple, Optional
+
+
+class Customer(NamedTuple):
+    name: str
+    fidelity: int
+
+
+class LineItem(NamedTuple):
+    product: str
+    quantity: int
+    price: Decimal
+
+    def total(self) -> Decimal:
+        return self.price * self.quantity
+
+
+class Order(NamedTuple):
+    customer: Customer
+    cart: Sequence[LineItem]
+    promotion: Optional['Promotion'] = None
+
+    def total(self) -> Decimal:
+        totals = (item.total() for item in self.cart)
+        return sum(totals, start=Decimal(0))
+
+    def due(self) -> Decimal:
+        if self.promotion is None:
+            discount = Decimal(0)
+        else:
+            discount = self.promotion.discount(self)
+        return self.total() - discount
+
+    def __repr__(self):
+        return f'<Order total: {self.total():.2f} due: {self.due():.2f}>'
+
+
+class Promotion(ABC):
+    """策略：抽象基类"""
+    @abstractmethod
+    def discount(self, order: Order) -> Decimal:
+        """Return discount as a positive dollar amount"""
+
+
+class FidelityPromo(Promotion):
+    """第一个具体策略：为积分是1000或以上的顾客提供5%折扣。"""
+
+    def discount(self, order: Order) -> Decimal:
+        rate = Decimal('0.05')
+        if order.customer.fidelity >= 1000:
+            return order.total() * rate
+        return Decimal(0)
+
+
+class BulkItemPromo(Promotion):
+    """第二个具体策略：单个商品的数量为20个或以上时，提供10%折扣。"""
+
+    def discount(self, order: Order) -> Decimal:
+        discount = Decimal(0)
+        for item in order.cart:
+            if item.quantity >= 20:
+                discount += item.total() * Decimal('0.1')
+        return discount
+
+
+class LargeOrderPromo(Promotion):
+    """第三个具体策略：订单中不同商品的数量达到10个或以上时，提供7%折扣。"""
+
+    def discount(self, order: Order) -> Decimal:
+        distinct_items = {item.product for item in order.cart}
+        if len(distinct_items) >= 10:
+            return order.total() * Decimal('0.07')
+        return Decimal(0)
+```
+
+将上述策略类代码使用函数进行改写，把具体策略换成简单的函数，去掉抽象基类`Promotion`，Order类也修改了。如下：
+```python
+from dataclasses import dataclass
+from typing import Callable
+
+@dataclass(frozen=True)
+class Order:
+    customer: Customer
+    cart: Sequence[LineItem]
+    # 可以接收一个Order参数，并返回一个Decimal值的可调用对象
+    promotion: Optional[Callable[['Order'], Decimal]] = None
+
+    def total(self) -> Decimal:
+        totals = (item.total() for item in self.cart)
+        return sum(totals, start=Decimal(0))
+
+    def due(self) -> Decimal:
+        if self.promotion is None:
+            discount = Decimal(0)
+        else:
+            discount = self.promotion(self)
+        return self.total() - discount
+
+    def __repr__(self):
+        return f'<Order total: {self.total():.2f} due: {self.due():.2f}>'
+
+def fidelity_promo(order: Order) -> Decimal:
+    """第一个具体策略：为积分是1000或以上的顾客提供5%折扣。"""
+    if order.customer.fidelity >= 1000:
+        return order.total() * Decimal('0.05')
+    return Decimal(0)
+
+
+def bulk_item_promo(order: Order) -> Decimal:
+    """第二个具体策略：单个商品的数量为20个或以上时，提供10%折扣。"""
+    discount = Decimal(0)
+    for item in order.cart:
+        if item.quantity >= 20:
+            discount += item.total() * Decimal('0.1')
+    return discount
+
+
+def large_order_promo(order: Order) -> Decimal:
+    """第三个具体策略：订单中不同商品的数量达到10个或以上时，提供7%折扣。"""
+    distinct_items = {item.product for item in order.cart}
+    if len(distinct_items) >= 10:
+        return order.total() * Decimal('0.07')
+    return Decimal(0)
+```
+
+添加选择最佳策略的代码——最简单的实现：
+```python
+promos = [fidelity_promo, bulk_item_promo, large_order_promo]
+
+
+def best_promo(order: Order) -> Decimal:
+    """选择可用的最佳折扣"""
+    return max(promo(order) for promo in promos)
+```
+使用`globals`函数，帮助`best_promo`自动找到其他可用的`*_promo`函数：
+```python
+promos = [promo for name, promo in globals().items()  
+                if name.endswith('_promo') and        
+                   name != 'best_promo'               
+]
+
+
+def best_promo(order: Order) -> Decimal:              
+    """选择可用的最佳折扣"""
+    return max(promo(order) for promo in promos)
+```
+使用`inspect.getmembers`函数获取对象的属性，从而实现：
+```
+import inspect
+# 该模块包含所有的策略函数
+import promotions
+
+# 得到promotins模块下所有的函数对象
+promos = [func for _, func in inspect.getmembers(promotions, inspect.isfunction)]
+
+
+def best_promo(order: Order) -> Decimal:
+    """选择可用的最佳折扣"""
+    return max(promo(order) for promo in promos)
+```
+
+使用装饰器来改进策略：
+```python
+Promotion = Callable[[Order], Decimal]
+
+promos: list[Promotion] = []
+
+# 注册装饰器
+def promotion(promo: Promotion) -> Promotion:
+    promos.append(promo)
+    return promo
+
+
+def best_promo(order: Order) -> Decimal:
+    """选择可用的最佳折扣"""
+    return max(promo(order) for promo in promos)  # <3>
+
+
+@promotion
+def fidelity(order: Order) -> Decimal:
+    """第一个具体策略：为积分是1000或以上的顾客提供5%折扣。"""
+    if order.customer.fidelity >= 1000:
+        return order.total() * Decimal('0.05')
+    return Decimal(0)
+
+
+@promotion
+def bulk_item(order: Order) -> Decimal:
+    """第二个具体策略：单个商品的数量为20个或以上时，提供10%折扣。"""
+    discount = Decimal(0)
+    for item in order.cart:
+        if item.quantity >= 20:
+            discount += item.total() * Decimal('0.1')
+    return discount
+
+
+@promotion
+def large_order(order: Order) -> Decimal:
+    """第三个具体策略：订单中不同商品的数量达到10个或以上时，提供7%折扣。"""
+    distinct_items = {item.product for item in order.cart}
+    if len(distinct_items) >= 10:
+        return order.total() * Decimal('0.07')
+    return Decimal(0)
+```
+装饰器的优点：
+1. 促销策略函数无须使用特殊的名称（不用以`_promo`结尾）。
+2. `@promotion`装饰器突出了被装饰的函数作用，还便于临时禁用某个促销策略。
+3. 促销折扣策略可以在其他模块中定义。
+
