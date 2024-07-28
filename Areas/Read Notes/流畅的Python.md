@@ -355,4 +355,4 @@ for city in sorted(metro_data, key=itemgetter(1)):
 ('Mexico City', 'MX', 20.142, (19.433333, -99.133333)) 
 ('New York-Newark', 'US', 20.104, (40.808611, -74.020386))
 ```
-	
+# **六、使用一等函数实现设计模式
