@@ -358,3 +358,6 @@ for city in sorted(metro_data, key=itemgetter(1)):
 
 # **六、使用一等函数实现设计模式
 
+经典的策略模式来处理订单折扣如下图所示：
+![[Pasted image 20240728092457.png]]
+
