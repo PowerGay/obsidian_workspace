@@ -332,7 +332,6 @@ sorted(fruits, key=locale.strxfrm)
 ```
 
 4、支持函数式编程的包
-	1）operator模块
 ```python
 # 使用reduce函数和operator.mul函数计算阶乘 
 from functools import reduce 
@@ -356,6 +355,4 @@ for city in sorted(metro_data, key=itemgetter(1)):
 ('Mexico City', 'MX', 20.142, (19.433333, -99.133333)) 
 ('New York-Newark', 'US', 20.104, (40.808611, -74.020386))
 ```
-
-	1）operator模块
 	
