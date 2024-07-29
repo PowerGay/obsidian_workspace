@@ -305,30 +305,27 @@ sorted(fruits, key=locale.strxfrm)
 
 3、定位参数和仅限关键字参数。
 ```python
- def tag(name, *content, cls=None, **attrs):
-     """生成一个或多个HTML标签"""
-     if cls is not None:
-         attrs['class'] = cls
-     if attrs:
-         attr_str = ''.join(' %s="%s"' % (attr, value) for attr, value in sorted(attrs.items()))
-     else:
-         attr_str = ''
-     if content:
-         return '\n'.join('<%s%s>%s</%s>' % (name, attr_str, c, name) for c in content)
-     else:
-         return '<%s%s />' % (name, attr_str)
- ​
- ​
- print(tag('br')) # name字段
- print(tag('p', 'hello')) # conetnt字段获取第二个参数
- print(tag('p', 'hello', 'world')) 
- print(tag('p', 'hello', id='nodep')) # 由于id字段没有，所以attrs获取
- print(tag('p', 'hello', 'world', 'type',cls='pn')) 
- print(tag(content='testing', name='img')) #attrs获取content
- my_tags = {'name': 'img', 'title':'Sunset Boulevard' ,'src': 'sunset.jpg', 'cls': 'framed'}
- print(tag(**my_tags)) # 解包，参数依次传入
+# 使用reduce函数和operator.mul函数计算阶乘 
+from functools import reduce 
+from operator import mul 
+def factorial(n): 
+	return reduce(mul, range(1, n + 1))
+```
+```python
+# 使用itemgetter排序一个元组列表 
+metro_data = [ ('Tokyo', 'JP', 36.933, (35.689722, 139.691667)), ('Delhi NCR', 'IN', 21.935, (28.613889, 77.208889)), ('Mexico City', 'MX', 20.142, (19.433333, -99.133333)), ('New York-Newark', 'US', 20.104, (40.808611, -74.020386)), ('São Paulo', 'BR', 19.649, (-23.547778, -46.635833)), ] 
+from operator import itemgetter 
+for city in sorted(metro_data, key=itemgetter(1)): 
+	print(city)
 ```
 
+```python
+('São Paulo', 'BR', 19.649, (-23.547778, -46.635833)) 
+('Delhi NCR', 'IN', 21.935, (28.613889, 77.208889)) 
+('Tokyo', 'JP', 36.933, (35.689722, 139.691667)) 
+('Mexico City', 'MX', 20.142, (19.433333, -99.133333)) 
+('New York-Newark', 'US', 20.104, (40.808611, -74.020386))
+```
 4、支持函数式编程的包
 ```python
 # 使用reduce函数和operator.mul函数计算阶乘 
@@ -372,7 +369,6 @@ for city in sorted(metro_data, key=itemgetter(1)):
 	def name_index(start: int = 32, end: int) -> dict[str, set[str]]:
 ```
 6）抽象基类：一般来说，在参数得类型提示中最好使用`abc.Mapping`或`abc.MutableMapping`，不要使用`dict`
-
 # **七、使用一等函数实现设计模式**
 
 经典的策略模式来处理订单折扣如下图所示：
