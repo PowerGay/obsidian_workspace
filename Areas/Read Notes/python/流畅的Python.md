@@ -651,4 +651,51 @@ avg = make_averager()
 >>> avg.__code__.co_freevars
 ('series',)
 ```
-当多次调用`avg`时可以发现，虽然函数的定义域不可用，但是series这一自由变量的值仍然保留（可以理解为）
+当多次调用函数对象`avg`时可以发现，虽然`averager`函数的定义域不可用，但是series这一自由变量的值仍然保留（可以理解为类的概念，series为类的属性，`averager`为类的方法），但注意如果series这一自由变量为不可变类型在`averager`进行了赋值操作，则在`averager`内部的series将会变为局部变量，而不是自由变量。例如：
+```python
+# 计算累计平均值，不保存所有历史
+def make_averager():
+    count = 0
+    total = 0
+    
+    def averager(new_value):
+        count += 1
+        total += new_value
+        return total / count
+    
+    return averager
+```
+报错：
+```python
+>>> avg = make_averager()
+>>> avg(10)
+Traceback (most recent call last):
+...
+UnboundLocalError: local variable 'count' referenced before assignment
+>>>
+```
+在 `averager` 的定义体中为 count 赋值了，这会把 count 变成局部变量。total 变量也受这个问题影响。
+解决方法是在count和total前面加nonlocal
+```python
+# 计算累计平均值，不保存所有历史
+def make_averager():
+    count = 0
+    total = 0
+    
+    def averager(new_value):
+        nonlocal count, total
+        count += 1
+        total += new_value
+        return total / count
+    
+    return averager
+```
+
+变量查找逻辑：
+- 如果是`global x`声明，则`x`来自模块全局作用域，并赋予那个作用域中`x`的值。
+- 如果是`nonlocal x`声明，则`x`来自最近一个定义它的外层函数，并赋予那个函数中局部变量`x`的值。
+- 如果`x`是参数，或者在函数主体中赋了值，那么`x`就是局部变量。
+- 如果引用了`x`，但是没有赋值也不是参数，则需要遵循以下规则：
+    - 在外层函数主体的局部作用域（非局部作用域）内查找`x`。
+    - 如果在外层作用域类没有找到，则从模块全局作用域内读取。
+    - 如果在模块全局作用域内没有找到，则从`__builtins__.__dict__`中读取。
