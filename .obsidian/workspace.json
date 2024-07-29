@@ -148,8 +148,10 @@
       "templater-obsidian:Templater": false
     }
   },
-  "active": "d60b957781af1125",
+  "active": "5a63c6adcbed9f4c",
   "lastOpenFiles": [
+    "Areas/Read Notes/LLM",
+    "Resources/LLM",
     "Archives/attachment",
     "Archives/未命名.canvas",
     "Areas/Read Notes/python/流畅的Python.md",
@@ -171,8 +173,6 @@
     "Areas/Read Notes",
     "Areas/Research Reports",
     "Resources/python",
-    "Archives",
-    "Resources",
     "influence Python.md"
   ]
 }

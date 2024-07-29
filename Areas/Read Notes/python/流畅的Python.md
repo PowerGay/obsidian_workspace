@@ -1,7 +1,6 @@
 ---
 data: 2024-07-26
 ---
-
 # **一、Python的数据类型**
 
 1、对于自定义的序列类型类，需要实现两个特殊方法即`__len__(self)`和`__getitem__(self,position)`。例如：
@@ -273,6 +272,7 @@ d = StrKeyDict0([('2', 'two'), ('4', 'four')])
 5、使用`open`函数打开文件时始终应该明确传入` encoding= 参数`，因为不同的设备使用的默认编码可能不同。
 
 6、为了正确比较而规范化Unicode字符，建议使用NFC（Normalization Form C）：使用最少的码点构成等价的字符串。
+
 ```python
 from unicodedata import normalize
 s1 = 'café' 
@@ -280,15 +280,19 @@ s2 = 'cafe\N{COMBINING ACUTE ACCENT}'
 len(s1), len(s2) # (4,5)
 len(normalize('NFC', s1)), len(normalize('NFC', s2)) # (4,4)
 ```
+
 不区分大小写的比较应该使用 `str.casefold()`。
 
 7、在 Python 中，非 ASCII文本的标准排序方式是使用`locale.strxfrm`函数。如下：
+
 ```python
 # 巴西产水果的列表排序 
 import locale my_locale = locale.setlocale(locale.LC_COLLATE, 'pt_BR.UTF-8') fruits = ['caju', 'atemoia', 'cajá', 'açaí', 'acerola'] 
 sorted(fruits, key=locale.strxfrm)
 ```
-或者使用PyUCA 库。
+
+或者使用PyUCA 库：
+
 ```python
 >>> import pyuca
 >>> coll = pyuca.Collator()
@@ -304,6 +308,7 @@ sorted(fruits, key=locale.strxfrm)
 2、任何 Python 对象都可以表现得像函数。为此，只需实现实例方法` __call__`。
 
 3、定位参数和仅限关键字参数。
+
 ```python
 # 使用reduce函数和operator.mul函数计算阶乘 
 from functools import reduce 
@@ -326,7 +331,9 @@ for city in sorted(metro_data, key=itemgetter(1)):
 ('Mexico City', 'MX', 20.142, (19.433333, -99.133333)) 
 ('New York-Newark', 'US', 20.104, (40.808611, -74.020386))
 ```
+
 4、支持函数式编程的包
+
 ```python
 # 使用reduce函数和operator.mul函数计算阶乘 
 from functools import reduce 
@@ -365,9 +372,11 @@ for city in sorted(metro_data, key=itemgetter(1)):
 3）泛化容器：可以用类型参数声明，如：`List[str]`
 4）元组类型：如`tuple[str, float, ...]`
 5)泛化映射：使用`MappingType[KeyType, ValueType]`形式注解，如：
+
 ```python
 	def name_index(start: int = 32, end: int) -> dict[str, set[str]]:
 ```
+
 6）抽象基类：一般来说，在参数得类型提示中最好使用`abc.Mapping`或`abc.MutableMapping`，不要使用`dict`
 # **七、使用一等函数实现设计模式**
 
@@ -379,6 +388,7 @@ for city in sorted(metro_data, key=itemgetter(1)):
 2. 同一个订单中，单个商品的数量达到20个或以上，享10%折扣。
 3. 订单中不同商品的数量达到10个或以上，享7%折扣。
 代码如下：
+
 ```python
 from abc import ABC, abstractmethod
 from collections.abc import Sequence
@@ -459,6 +469,7 @@ class LargeOrderPromo(Promotion):
 ```
 
 将上述策略类代码使用函数进行改写，把具体策略换成简单的函数，去掉抽象基类`Promotion`，Order类也修改了。如下：
+
 ```python
 from dataclasses import dataclass
 from typing import Callable
@@ -509,6 +520,7 @@ def large_order_promo(order: Order) -> Decimal:
 ```
 
 添加选择最佳策略的代码——最简单的实现：
+
 ```python
 promos = [fidelity_promo, bulk_item_promo, large_order_promo]
 
@@ -517,7 +529,9 @@ def best_promo(order: Order) -> Decimal:
     """选择可用的最佳折扣"""
     return max(promo(order) for promo in promos)
 ```
+
 使用`globals`函数，帮助`best_promo`自动找到其他可用的`*_promo`函数：
+
 ```python
 promos = [promo for name, promo in globals().items()  
                 if name.endswith('_promo') and        
@@ -529,8 +543,10 @@ def best_promo(order: Order) -> Decimal:
     """选择可用的最佳折扣"""
     return max(promo(order) for promo in promos)
 ```
+
 使用`inspect.getmembers`函数获取对象的属性，从而实现：
-```
+
+```python
 import inspect
 # 该模块包含所有的策略函数
 import promotions
@@ -545,6 +561,7 @@ def best_promo(order: Order) -> Decimal:
 ```
 
 使用装饰器来改进策略：
+
 ```python
 Promotion = Callable[[Order], Decimal]
 
@@ -587,3 +604,9 @@ def large_order(order: Order) -> Decimal:
         return order.total() * Decimal('0.07')
     return Decimal(0)
 ```
+
+优点：
+1. 促销策略函数无须使用特殊的名称（不用以`_promo`结尾）。
+2. `@promotion`装饰器突出了被装饰的函数作用，还便于临时禁用某个促销策略。
+3. 促销折扣策略可以在其他模块中定义。
+# **八、装饰器与闭包**
