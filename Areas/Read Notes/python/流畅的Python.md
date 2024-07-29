@@ -337,7 +337,6 @@ from operator import mul
 def factorial(n): 
 	return reduce(mul, range(1, n + 1))
 ```
-
 ```python
 # 使用itemgetter排序一个元组列表 
 metro_data = [ ('Tokyo', 'JP', 36.933, (35.689722, 139.691667)), ('Delhi NCR', 'IN', 21.935, (28.613889, 77.208889)), ('Mexico City', 'MX', 20.142, (19.433333, -99.133333)), ('New York-Newark', 'US', 20.104, (40.808611, -74.020386)), ('São Paulo', 'BR', 19.649, (-23.547778, -46.635833)), ] 
@@ -592,8 +591,3 @@ def large_order(order: Order) -> Decimal:
         return order.total() * Decimal('0.07')
     return Decimal(0)
 ```
-装饰器的优点：
-1. 促销策略函数无须使用特殊的名称（不用以`_promo`结尾）。
-2. `@promotion`装饰器突出了被装饰的函数作用，还便于临时禁用某个促销策略。
-3. 促销折扣策略可以在其他模块中定义。
-# **八、装饰器与闭包**
