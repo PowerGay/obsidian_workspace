@@ -610,3 +610,36 @@ def large_order(order: Order) -> Decimal:
 2. `@promotion`装饰器突出了被装饰的函数作用，还便于临时禁用某个促销策略。
 3. 促销折扣策略可以在其他模块中定义。
 # **八、装饰器与闭包**
+1、装饰器的基本性质：
+- 装饰器是一个函数或其他可调用对象。
+- 装饰器可以把被装饰的函数替换成别的函数。
+- 装饰器在加载（导入）模块时立即执行，而被装饰的函数只在明确调用时运行。
+```python
+@decorate
+def target():
+    print('running target()')
+```
+
+等价于：
+
+```python
+def target():
+    print('running target()')
+target = decorate(target)
+```
+
+函数对象替换：
+
+```python
+def deco(func): 
+	def inner(): print('running inner') 
+	return inner 
+@deco 
+def target(): 
+	print('running target()')
+print(target()) -> "running inner"
+#函数对象被替换
+print(target) -> <function __main__.deco.<locals>.inner()>
+```
+
+
