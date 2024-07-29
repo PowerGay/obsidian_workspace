@@ -643,4 +643,12 @@ print(target) -> <function __main__.deco.<locals>.inner()>
 ```
 
 2、闭包：延伸了作用域的函数，包括函数（f）主体中引用的非全局变量和局部变量。这些变量必须来自包含f的外部函数的局部作用域。![[Pasted image 20240730073630.png]]
-审查`make_avrtager`
+审查`make_avrtager`创建的函数：
+```python
+avg = make_averager()
+>>> avg.__code__.co_varnames
+('new_value', 'total')
+>>> avg.__code__.co_freevars
+('series',)
+```
+当多次调用`avg`时可以发现，虽然函数的定义域不可用，但是series这一自由变量的值仍然保留（可以理解为）
