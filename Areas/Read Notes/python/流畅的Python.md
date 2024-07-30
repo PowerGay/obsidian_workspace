@@ -699,4 +699,53 @@ def make_averager():
     - 在外层函数主体的局部作用域（非局部作用域）内查找`x`。
     - 如果在外层作用域类没有找到，则从模块全局作用域内读取。
     - 如果在模块全局作用域内没有找到，则从`__builtins__.__dict__`中读取。
-3、单分派泛化函数。`functools.singledispatch`装饰器可以把整体方案拆分成多个模块，甚至可以为第三方包中无法编辑的类型提供专门的函数，将普通函数变成了泛化函数的入口，即为单分派。如果根据多个参数选择专门的函数，则是多分派。
+
+3、单分派泛化函数。`functools.singledispatch`装饰器可以把整体方案拆分成多个模块，甚至可以为第三方包中无法编辑的类型提供专门的函数，将普通函数变成了泛化函数的入口，即为单分派。如果根据多个参数选择专门的函数，则是多分派。例子：开发一个调试Web应用程序的工具，生成HTML，以显示不同类型的Python对象。需要满足如下功能：
+-  当参数为`str`时，内部的换行符替换为`<br/>\n`，不使用`<pre>`标签，使用`<p>`。
+- 当参数为`int`时，以十进制和十六进制显示数（bool除外）。
+- 当参数为`list`时，输出一个HTML列表，根据各项的类型进行格式化。
+- 当参数为`float`和`Decimal`时，正常输出值，外加分数形式。
+```python
+from functools import singledispatch
+from collections import abc
+import fractions
+import decimal
+import html
+import numbers
+
+@singledispatch #**单分派泛化函数代替函数重载**
+def htmlize(obj: object) -> str:
+    content = html.escape(repr(obj))
+    return f'<pre>{content}</pre>'
+
+@htmlize.register #当被装饰函数有参数类型时，register不需添加类型参数
+def _(text: str) -> str: 
+    content = html.escape(text).replace('\n', '<br/>\n')
+    return f'<p>{content}</p>'
+
+@htmlize.register
+def _(seq: abc.Sequence) -> str:
+    inner = '</li>\n<li>'.join(htmlize(item) for item in seq)
+    return '<ul>\n<li>' + inner + '</li>\n</ul>'
+
+@htmlize.register
+def _(n: numbers.Integral) -> str:
+    return f'<pre>{n} (0x{n:x})</pre>'
+
+@htmlize.register
+def _(n: bool) -> str:
+    return f'<pre>{n}</pre>'
+
+@htmlize.register(fractions.Fraction)
+def _(x) -> str:
+    frac = fractions.Fraction(x)
+    return f'<pre>{frac.numerator}/{frac.denominator}</pre>'
+
+@htmlize.register(decimal.Decimal)
+@htmlize.register(float) #没有参数类型则需添加
+def _(x) -> str:
+    frac = fractions.Fraction(x).limit_denominator()
+    return f'<pre>{x} ({frac.numerator}/{frac.denominator})</pre>'
+```
+
+4、参数化装饰器。
