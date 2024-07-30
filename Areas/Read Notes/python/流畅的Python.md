@@ -748,4 +748,28 @@ def _(x) -> str:
     return f'<pre>{x} ({frac.numerator}/{frac.denominator})</pre>'
 ```
 
-4、参数化装饰器。装饰器将被装饰函数作为第一个参数，而被装饰函数的参数则作为装饰器内部函数的参数调用。装饰器为了接受除被装饰函数外的额外参数创建一个装饰器工厂函数，把参数传给它，返回一个装饰器。
+4、参数化装饰器。装饰器将被装饰函数作为第一个参数，而被装饰函数的参数则作为装饰器内部函数的参数调用。装饰器为了接受除被装饰函数外的额外参数创建一个装饰器工厂函数，把参数传给它，返回一个装饰器。当使用参数化装饰器时，必须将`@function`转换为`@function()`，即使不传入参数也需要使用函数调用的方法。
+```python
+import time
+
+DEFAULT_FMT = '[{elapsed:0.8f}s] {name}({args}) -> {result}'
+
+
+def clock(fmt=DEFAULT_FMT): # clock是参数化装饰器的工厂函数
+    def decorate(func):     # 真正的装饰器 
+        def clocked(*_args):  # 包装被装饰的函数 
+            t0 = time.perf_counter()
+            _result = func(*_args)  # 调用被装饰的函数
+            elapsed = time.perf_counter() - t0
+            name = func.__name__
+            args = ', '.join(repr(arg) for arg in _args) 
+            result = repr(_result)  
+            print(fmt.format(**locals()))
+            return _result
+
+        return clocked 
+
+    return decorate
+```
+
+# **九、装饰器与闭包**
