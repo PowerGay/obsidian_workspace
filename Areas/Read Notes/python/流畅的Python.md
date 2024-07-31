@@ -791,3 +791,79 @@ def clock(fmt=DEFAULT_FMT): # clock是参数化装饰器的工厂函数
 # **十、符合Python风格的对象**
 
 1、向量类的实现：
+**需求：**
+-  Vector2d实例的分量可以直接通过属性访问（无需调用读值方法）。
+- Vector2d实例可以拆包成变量元组。
+- Vector2d实例的表示形式模拟源码构建的实例的形式。
+- 可以支持`==`比较。
+- 支持`bytes`函数，输出实例的二进制表示形式。
+- 支持`abs`函数，返回Vector2d实例的模。
+- 支持`bool`函数，如果Vector2d实例的模为零，就返回False，否则返回True。
+```python
+from array import array
+import math
+
+
+class Vector2d_v1:
+    # 在Vector2d实例和字节序列之间转换时使用
+    typecode = 'd'
+
+    def __init__(self, x, y):
+        self.x = float(x)   
+        self.y = float(y)
+
+    def __iter__(self):
+        # 将实例变成可迭代对象
+        return (i for i in (self.x, self.y))
+
+    def __repr__(self):
+        class_name = type(self).__name__
+        # 使用!r获取各个分量的表示形式
+        return '{}({!r}, {!r})'.format(class_name, *self) 
+
+    def __str__(self):
+        # 得到一个元组，显示为有序对
+        return str(tuple(self))
+
+    def __bytes__(self):
+        return (bytes([ord(self.typecode)]) +  
+                bytes(array(self.typecode, self)))  
+
+    def __eq__(self, other):
+        return tuple(self) == tuple(other)  
+
+    def __abs__(self):
+        # 计算x分量和y分量构成的直角三角形的斜边长
+        return math.hypot(self.x, self.y)  
+
+    def __bool__(self):
+        return bool(abs(self)) 
+    
+    def angle(self):
+        return math.atan2(self.y, self.x)
+    
+    def __format__(self, fmt_spec=''):
+        if fmt_spec.endswith('p'):
+            # 如果以p结尾，使用极坐标
+            fmt_spec = fmt_spec[:-1]
+            # 构建元组表示极坐标
+            coords = (abs(self), self.angle())
+            outer_fmt = '<{}, {}>' 
+        else:
+            # 如果不以p结尾，使用x分量和y分量构建直角坐标
+            coords = self 
+            outer_fmt = '({}, {})'  
+        components = (format(c, fmt_spec) for c in coords) 
+        return outer_fmt.format(*components)
+    
+    @classmethod 
+    def frombytes(cls, octets):
+        # 从第一个字节中读取tpyecode
+        typecode = chr(octets[0]) 
+        # 创建一个memoryview，使用typecode进行转换
+        memv = memoryview(octets[1:]).cast(typecode)
+        # 得到构造函数所需的一对参数
+        return cls(*memv)
+    
+        
+```
