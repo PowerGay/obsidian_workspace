@@ -818,7 +818,7 @@ class Vector2d_v1:
 
     def __repr__(self):
         class_name = type(self).__name__
-        # 使用!r获取各个分量的表示形式
+        # 使用!r获取各个分量的表示形式,*self适合可迭代对象
         return '{}({!r}, {!r})'.format(class_name, *self) 
 
     def __str__(self):
