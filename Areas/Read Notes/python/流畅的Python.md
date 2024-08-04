@@ -813,7 +813,7 @@ class Vector2d_v1:
         self.y = float(y)
 
     def __iter__(self):
-        # 将实例变成可迭代对象
+        # 将实例变成可迭代对象,如x, y = Vector(1,2)
         return (i for i in (self.x, self.y))
 
     def __repr__(self):
@@ -864,6 +864,4 @@ class Vector2d_v1:
         memv = memoryview(octets[1:]).cast(typecode)
         # 得到构造函数所需的一对参数
         return cls(*memv)
-    
-        
 ```
