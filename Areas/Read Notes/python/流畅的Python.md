@@ -842,7 +842,7 @@ class Vector2d_v1:
     def angle(self):
         return math.atan2(self.y, self.x)
     
-    def __format__(self, fmt_spec=''):
+    def __format__(self, fmt_spec=''): #格式化方法
         if fmt_spec.endswith('p'):
             # 如果以p结尾，使用极坐标
             fmt_spec = fmt_spec[:-1]
@@ -853,6 +853,7 @@ class Vector2d_v1:
             # 如果不以p结尾，使用x分量和y分量构建直角坐标
             coords = self 
             outer_fmt = '({}, {})'  
+        #调用内置的format方法，fmt_spec为格式化参数，如浮点数f或科学计数e
         components = (format(c, fmt_spec) for c in coords) 
         return outer_fmt.format(*components)
     
@@ -865,3 +866,8 @@ class Vector2d_v1:
         # 得到构造函数所需的一对参数
         return cls(*memv)
 ```
+2、classmethod和staticmethod：
+- classmethod：定义操作类而不是操作实例的方法，常见用途是定义备选构造函数。类方法的第一个参数名为 cls。
+- staticmethod：静态方法，静态方法就是普通的函数，没有self和cls参数。
+3、可散列的Vector2d
+为了把 Vector2d 实例变成可散列的，必须使用` __hash__ `方法。
