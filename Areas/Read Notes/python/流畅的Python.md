@@ -870,4 +870,51 @@ class Vector2d_v1:
 - classmethod：定义操作类而不是操作实例的方法，常见用途是定义备选构造函数。类方法的第一个参数名为 cls。
 - staticmethod：静态方法，静态方法就是普通的函数，没有self和cls参数。
 3、可散列的Vector2d
-为了把 Vector2d 实例变成可散列的，必须使用` __hash__ `方法。
+为了把 Vector2d 实例变成可散列的，必须使用` __hash__ `方法。且Vector2d的实例属性必须为只读。可以使用如下方法：
+```python
+class Vector2d_v2:
+
+    def __init__(self, x, y):
+        self.__x = float(x)
+        self.__y = float(y)
+
+    @property
+    def x(self):
+        return self.__x
+
+    @property
+    def y(self):
+        return self.__y
+
+    def __iter__(self):
+        return (i for i in (self.x, self.y))
+```
+将x和y使用双下划线标记为私有，@property 装饰器把读值方法标记为特性，读值方法与公开属性同名，都是 x和y。需要读取 x 和 y 分量的方法可以保持不变，通过 self.x 和 self.y读取公开特性，而不必读取私有属性。然后实现` __hash__ `方法：
+```python
+class Vector2d_v2:
+
+    def __init__(self, x, y):
+        self.__x = float(x)
+        self.__y = float(y)
+
+    @property
+    def x(self):
+        return self.__x
+
+    @property
+    def y(self):
+        return self.__y
+
+    def __iter__(self):
+        return (i for i in (self.x, self.y))
+
+    def __eq__(self, other):
+        return tuple(self) == tuple(other)
+
+    def __hash__(self):
+        return hash((self.x, self.y))
+```
+4、私有属性与“受保护”属性
+- Python没有私有属性的保护机制，在前面加上两个前导下划线，尾部没有或最多有一个下划线，则会进行**名称改写**。即在实例的`__dict__ `属性中将私有变量改写为`_类名__privatevar`。
+
+- 约定使用一个下划线前缀编写“受保护”的属性，Python解释器不会对使用单个下划线的属性名做特殊处理。
