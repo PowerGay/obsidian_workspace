@@ -992,9 +992,13 @@ class VectorV2:
             cls = type(self)  
             # 调用类的构造函数，使用切片构建一个新的Vector实例
             return cls(self._components[key])
+        elif isinstance(key,number)
         # 单个索引
         index = operator.index(key)
         # 返回相应的元素
         return self._components[index]  
 ```
-然而，上述的方法只是对
+上述实现`__getattr__`方法不仅可以对属性进行切片，而且可以对实例进行切片像这样：
+![[Pasted image 20240806085620.png]]
+
+
