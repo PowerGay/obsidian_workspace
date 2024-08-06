@@ -932,3 +932,69 @@ class Vector2d_v3(Vector2d_v2):
 - 实例只拥有`__slots__`中列出的属性。
 
 # **十一、序列的修改散列和切片**
+1、构造n维的向量类：
+```python
+from array import array
+import reprlib
+import math
+
+
+class VectorV1:
+
+    def __init__(self, components):
+        # 将Vector的分量保存在一个数组中
+        self._components = array(self.typecode, components)
+
+    def __iter__(self):
+        return iter(self._components)
+
+    def __repr__(self):
+        # 生成有限长度表示形式
+        components = reprlib.repr(self._components) 
+        components = components[components.find('['):-1]
+        return f'Vector({components})'
+
+    def __str__(self):
+        return str(tuple(self))
+
+    def __bytes__(self):
+        return (bytes([ord(self.typecode)]) +
+                bytes(self._components))
+
+    def __eq__(self, other):
+        return tuple(self) == tuple(other)
+
+    def __abs__(self):
+        return math.hypot(*self)
+
+    def __bool__(self):
+        return bool(abs(self))
+
+    @classmethod
+    def frombytes(cls, octets):
+        typecode = chr(octets[0])
+        memv = memoryview(octets[1:]).cast(typecode)
+        return cls(memv)
+```
+
+2、为了使Vector可以切片操作，需要使其变为序列，即实现`__len__ `和 `__getitem__`方法。
+```python
+import operator
+
+class VectorV2:
+
+    def __len__(self):
+        return len(self._components)
+
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            # 如果是一个区间，获取实例的类
+            cls = type(self)  
+            # 调用类的构造函数，使用切片构建一个新的Vector实例
+            return cls(self._components[key])
+        # 单个索引
+        index = operator.index(key)
+        # 返回相应的元素
+        return self._components[index]  
+```
+然而，上述的方法只是对
