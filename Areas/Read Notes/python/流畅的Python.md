@@ -992,7 +992,8 @@ class VectorV2:
             cls = type(self)  
             # 调用类的构造函数，使用切片构建一个新的Vector实例
             return cls(self._components[key])
-        elif isinstance(key,number)
+        elif isinstance(key,Integral):
+	        return self._components[key] #整数就返回属性
         # 单个索引
         index = operator.index(key)
         # 返回相应的元素
@@ -1001,4 +1002,4 @@ class VectorV2:
 上述实现`__getattr__`方法不仅可以对属性进行切片，而且可以对实例进行切片像这样：
 ![[Pasted image 20240806085620.png]]
 
-
+3、当变为n维的Vector后，需要动态存取属性，如果使用 @property 装饰器来读取属性会非常的麻烦，为此需要使用`__getattr__`方法。
